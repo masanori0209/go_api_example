@@ -1,0 +1,32 @@
+# Resume 自動作成アプリ
+
+version: '3'
+
+#各サービス一覧
+services:
+
+  # API Server
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    volumes:
+      - ./api:/go/src/api
+    depends_on:
+      - 'db'
+  # DB Server
+  db:
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_HOST=%
+    volumes:
+      - ./resume_db/db-datadir:/var/lib/mysql
+      - ./resume_db:/docker-entrypoint-initdb.d
+      - ./resume_db/my.cnf:/etc/mysql/my.cnf
